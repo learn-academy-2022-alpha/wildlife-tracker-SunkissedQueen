@@ -2,7 +2,7 @@ class ChickensController < ApplicationController
 
   def index
     chickens = Chicken.all
-    render json: chickens
+    render json: chickens.as_json(include: :sightings)
   end
 
   def show
@@ -13,7 +13,7 @@ class ChickensController < ApplicationController
   def create
     chick = Chicken.create(chick_params)
     if chick.valid?
-      render json: chick
+      render json: chick.as_json(include: :sightings)
     else
       render json: chick.errors
     end
@@ -23,7 +23,7 @@ class ChickensController < ApplicationController
     one_chick = Chicken.find(params[:id])
     one_chick.update(chick_params)
     if one_chick.valid?
-      render json: one_chick
+      render json: one_chick.as_json(include: :sightings)
     else
       render json: one_chick.errors
     end
@@ -40,7 +40,7 @@ class ChickensController < ApplicationController
 
   private
   def chick_params
-    params.require(:chicken).permit(:name, :origin, :feature)
+    params.require(:chicken).permit(:name, :origin, :feature, :sightings_attributes => [ :date, :latitude, :longitude ])
   end
 
 end
