@@ -2,13 +2,13 @@ class SightingsController < ApplicationController
 
   def index
     sightings = Sighting.where(date: params[:start_date]..params[:end_date])
-    render json: sightings
+    render json: sightings.as_json(include: :chicken)
   end
   
   def create
     sighting = Chicken.find(params[:chicken_id]).sightings.create(sighting_params)
     if sighting.valid?
-      render json: sighting
+      render json: sighting.as_json(include: :chicken)
     else
       render json: sighting.errors
     end
@@ -18,7 +18,7 @@ class SightingsController < ApplicationController
     one_sight = Sighting.find(params[:id])
     one_sight.update(sighting_params)
     if one_sight.valid?
-      render json: one_sight
+      render json: one_sight.as_json(include: :chicken)
     else
       render json: one_sight.errors
     end
